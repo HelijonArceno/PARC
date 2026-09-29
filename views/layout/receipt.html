@@ -1,0 +1,67 @@
+<style>
+    .receipt_header{
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+    .receipt_wrapper{
+    border: solid black 1px;
+        width: 300px;
+        padding: 16px;
+        padding-top: 32px;
+        padding-bottom: 32px;
+    }
+    .receipt_summary{
+        display: flex;
+        justify-content: space-between;
+    }
+    .receipt *{
+        color: black !important;
+    }
+    .receipt{
+        display: none;
+    }
+
+</style>
+<div class="receipt_wrapper">
+    <div class="receipt_header">
+        <div class="receipt_title">SSRIMS</div>
+        <div>by Aceno, Helijon</div>
+        <h2 class="receipt_number"></h1>
+    </div>
+    <table id="receipt_table">
+        <colgroup>
+            <col width="75%">
+            <col width="10%">
+            <col width="5%">
+
+        </colgroup>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>price</th>
+                <th>qty</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <hr>
+    <div class="receipt_summary">
+        <div class="left">Items in quantity:</div>
+        <div class="right receipt_total_quantity"></div>
+    </div>
+    <div class="receipt_summary">
+        <div class="left">Total Amount:</div>
+        <div class="right receipt_total_amount"></div>
+    </div>
+    <hr>
+    <div class="receipt_summary">
+        <div class="left">Catered by:</div>
+        <div class="right receipt_employee"></div>
+    </div>
+    <div class="receipt_summary">
+        <div class="left">Transaciton done at</div>
+        <div class="right receipt_date"></div>
+    </div>
+</div>
