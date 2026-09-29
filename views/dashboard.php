@@ -29,11 +29,14 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/semantic.min.css">
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- D3 -->
     <script src="https://d3js.org/d3.v4.js"></script>
 </head>
     <style>
         .content{
+            margin-left: var(--section-gap);
+            margin-right: var(--section-gap);
             display: flex;
             flex-direction: column;
             padding: 16px;
@@ -43,21 +46,28 @@
         }
         .row{
             display: flex;
+            gap: 16px;
         }
         .cards{
             width: 100%;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            display: flex;
             gap: 16px;
         }
+        .cell{
+            border: var(--subtle-border);
+            background-color: var(--color-carbon);
+            padding: var(--card-padding);
+            border-radius: var(--radius-cards);
+        }
         .cards > .cell{
-            border: var(--strong-border);
+            flex:1;
+            border: var(--subtle-border);
             background-color: var(--color-carbon);
             padding: var(--card-padding);
             border-radius: var(--radius-cards);
             display: flex;
             flex-direction: column;
-            gap: var(--element-gap);
+            gap: 16px;
         }
         .cards > .cell > .description{
             font-size: var(--text-body-lg);
@@ -67,29 +77,28 @@
             color: var(--color-fog);
         }
         .container{
-            flex: 1;
-            height: 100%;
+            height: 500px;
             border: solid black 1px;
             padding: var(--card-padding);
             border-radius: var(--radius-cards);
             box-sizing: border-box;
         }
-        #sales{
-            width: 100%;
+        #sales_line_chart{
+            width: 100% !important;
             height: 100%;
         }
-        #sales text{
+        #sales_line_chart text{
             fill: #8a8f98;
         }
-        #sales .tick line, #sales .domain{
+        #sales_line_chart .tick line, #sales_line_chart .domain{
             stroke: #8a8f98;
         }
         .graph_container{
-            border: var(--strong-border);
+            border: var(--subtle-border);
             background-color: var(--color-carbon);
         }
         .row_title{
-            font-size: var(--text-subheading);
+            font-size: var(--text-subheading-l);
         }
         </style>
 <body>
@@ -117,25 +126,57 @@
             <div class="cards">
                 <!-- SALES -->
                 <div class="cell" id="today_total_sales">
-                    <div class="description">Today's sales</div>
+                    <div class="description">Daily sales</div>
                     <div class="data">PHP amount</div>
                 </div>
-                    <div class="cell" id="today_products_sold">
-                <div class="description">Products sold today</div>
+                <!-- <div class="cell" id="today_total_sales">
+                    <div class="description">Weekly Sales</div>
+                    <div class="data">PHP amount</div>
+                </div> -->
+                <div class="cell" id="today_total_sales">
+                    <div class="description">Monthly Sales</div>
+                    <div class="data">PHP amount</div>
+                </div>
+                <div class="cell" id="today_total_sales">
+                    <div class="description">Annual Sales</div>
+                    <div class="data">PHP amount</div>
+                </div>
+                <!-- <div class="cell" id="today_products_sold">
+                    <div class="description">Daily Products Sold</div>
                     <div class="data">QTY</div>
-                    </div>
+                </div>
                 <div class="cell" id="today_gross_profit">
                     <div class="description">Today's gross profit</div>
-                        <div class="data">PHP amount</div>
-                </div>
+                    <div class="data">PHP amount</div>
+                </div> -->
                 <div class="cell" id="daily_sales_performance">
-                    <div class="description">Sales performance VS yesterday</div>
+                    <div class="description">Daily Sales Performance</div>
                     <div class="data">% better than yesterday</div>
                 </div>
             </div>
             
         </div>
         
+        <div class="row_title">
+            This Week's Sales
+        </div>
+        <div class="row">
+            <div class="container graph_container" style="flex:4">
+                <canvas id="daily_sales_line_chart"></canvas>
+            </div>
+            <div class="cell">
+                <div>1 coca-cola php982.00</div>
+                <div>2 coca-cola php982.00</div>
+                <div>4 coca-cola php982.00</div>
+                <div>4 coca-cola php982.00</div>
+            </div>
+            <div class="container graph_container" style="flex:1">
+                <canvas id="daily_sales_category_distribution_pie_chart"></canvas>
+            </div>
+        </div>
+        <div class="row_title">
+            Inventory Status
+        </div>
          <div class="row">
             <div class="cards">
                 <!-- INVENTORY -->
@@ -143,12 +184,12 @@
                     <div class="description">Near Expiry</div>
                     <div class="data">QTY products</div>
                 </div>
-                <div class="cell" id="expired">
-                    <div class="description">Expired</div>
-                    <div class="data">QTY products</div>
-                </div>
                 <div class="cell" id="low_stock">
                     <div class="description">low stock</div>
+                    <div class="data">QTY products</div>
+                </div>
+                <div class="cell" id="expired">
+                    <div class="description">Expired</div>
                     <div class="data">QTY products</div>
                 </div>
                 <div class="cell" id="no_stock">
@@ -157,15 +198,6 @@
                 </div>
             </div>
         </div>
-        <div class="row_title">
-            This Week's Sales
-        </div>
-        <div class="row" style="flex: 1;">
-            <div class="container graph_container">
-                <svg id="sales"></svg>
-            </div>
-        </div>
-
     </div>
     
 </body>
