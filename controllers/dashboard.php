@@ -65,49 +65,56 @@
         KPI('near_expiry','quantity', today, expiry_range);
         KPI('daily_sales_performance','percent', yesterday, today);
 
-        load_sales_graph();
+       
+        load_sales_line_chart();
+        load_sales_category_distribution_pie_chart();
 
-        function load_sales_graph(){
-            const width = $('#sales').width();
-            const height = $('#sales').height();
-            const marginTop = 20;
-            const marginRight = 30;
-            const marginBottom = 30;
-            const marginLeft = 40;
-        
-        
-            const x = d3.scaleUtc()
-                .domain([new Date(week[0][0]),new Date(week[6][0])])
-                .range([0,width]);
-            
-            const y = d3.scaleLinear()
-                .domain([0,d3.max(week, d => d[1])])
-                .range([height - marginBottom, marginTop]);
-        
-            const graph_container = d3.select('#sales');
-        
-            // Add the x-axis.
-            graph_container.append("g")
-                .attr("transform", `translate(${marginLeft},${height - marginBottom})`)
-                .call(d3.axisBottom(x));
-        
-            // Add the y-axis.
-            graph_container.append("g")
-                .attr("transform", `translate(${marginLeft},0)`)
-                .call(d3.axisLeft(y));  
-
-        
-            const line = d3.line()
-                .x(d => x(new Date(d[0])) + marginLeft)
-                .y(d => y(d[1]))
-        
-            graph_container.append("path")
-                .datum(week)
-                .attr('fill','none')
-                .attr('stroke','white')
-                .attr('stroke-width', 2)
-                .attr('d',line);
+        function load_sales_line_chart(){
+            const daily_sales = document.getElementById('daily_sales_line_chart');
+       
+            new Chart(daily_sales, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'Daily Sales',
+                        data: week,
+                        borderWidth: 1,
+                    },{
+                        label: 'Daily Sales',
+                        data: week,
+                        borderWidth: 1,
+                    }],
+                },
+                options: {
+                maintainAspectRatio: false,
+                // responsive: true,
+                    scales: {
+                        y: {
+                        beginAtZero: true
+                        }
+                    }
+                }
+            });
         }
+        function load_sales_category_distribution_pie_chart(){
+            const daily_sales = document.getElementById('daily_sales_category_distribution_pie_chart');
+            new Chart(daily_sales, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Snacks', 'Drinks', 'Canned Goods', 'Personal Care', 'Others'],
+                    datasets: [{
+                        label: 'Daily Sales',
+                        data: [1,2,3,4,5],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                maintainAspectRatio: false,
+                }
+            });
+        }
+
+        
     }
 
     function toYMD(date){
@@ -182,4 +189,6 @@
         })
         return output;
     }
+
+    
 </script>
