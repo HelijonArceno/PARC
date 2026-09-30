@@ -100,6 +100,11 @@
         .row_title{
             font-size: var(--text-subheading-l);
         }
+        #top_products{
+            width: 250px;
+            overflow-y: hidden;
+            min-height: 0;
+        }
         </style>
 <body>
     <div class="nav_bar">
@@ -129,10 +134,10 @@
                     <div class="description">Daily sales</div>
                     <div class="data">PHP amount</div>
                 </div>
-                <!-- <div class="cell" id="today_total_sales">
+                <div class="cell" id="today_total_sales">
                     <div class="description">Weekly Sales</div>
                     <div class="data">PHP amount</div>
-                </div> -->
+                </div>
                 <div class="cell" id="today_total_sales">
                     <div class="description">Monthly Sales</div>
                     <div class="data">PHP amount</div>
@@ -164,11 +169,14 @@
             <div class="container graph_container" style="flex:4">
                 <canvas id="daily_sales_line_chart"></canvas>
             </div>
-            <div class="cell">
-                <div>1 coca-cola php982.00</div>
+            <div class="cell" id="top_products">
+                <table>
+                    <tbody ></tbody>
+                </table>
+                <!-- <div>1 coca-cola php982.00</div>
                 <div>2 coca-cola php982.00</div>
                 <div>4 coca-cola php982.00</div>
-                <div>4 coca-cola php982.00</div>
+                <div>4 coca-cola php982.00</div> -->
             </div>
             <div class="container graph_container" style="flex:1">
                 <canvas id="daily_sales_category_distribution_pie_chart"></canvas>
