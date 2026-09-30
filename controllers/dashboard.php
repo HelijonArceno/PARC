@@ -19,6 +19,7 @@
 
         // used to store the dates
         let week = [];
+        let weekdates = [];
 
         // retrieves the day number in a week from 0-6
         let weekday = now.getDay();
@@ -34,6 +35,8 @@
             let ndate = new Date(today);
             ndate.setDate(ndate.getDate() + day_from_now)
             week[i] = [toYMD(ndate), sale_by_date(toYMD(ndate))];
+
+            weekdates[i] = toYMD(ndate);
         }
 
         day_from_now = 0;
@@ -44,9 +47,69 @@
             let ndate = now;
             ndate.setDate(ndate.getDate() + day_from_now)
             week[i] = [toYMD(ndate), sale_by_date(toYMD(ndate))];
+
+            weekdates[i] = toYMD(ndate);
         }
 
         console.log(week)
+
+        // alert(weekdates);
+
+        let sales_distribution_label = [];
+        let sales_distribution_data = [];
+
+        $.ajax({
+            url: '../models/dashboard/sales_by_date_and_category.php',
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            data:{
+                date        : weekdates
+            },
+            success: function(response){
+                $.each(response, function(index, record){
+                    // console.log(record.category +'|'+ record.total_sales);
+                    sales_distribution_label[index] = record.category;
+                    sales_distribution_data[index] = record.total_sales;
+                });
+                
+            },
+            error: function(response){
+                console.log('ERROR KPI: ' + response);
+            }
+        })
+
+        $.ajax({
+            url: '../models/dashboard/sales_top_by_date.php',
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            data:{
+                date        : weekdates
+            },
+            success: function(response){
+                let display;
+                $.each(response, function(index, record){
+                    display += `
+                    <tr>
+                        <td>
+                        ${parseInt(index) + parseInt(1)}
+                        </td>
+                        <td>
+                        ${record.total_sales}
+                        </td>
+                        <td>
+                        ${record.brand}, ${record.product_name}, ${record.variant}, ${record.size} ${record.unit}
+                        </td>
+                    </tr>`
+                });
+                $('#top_products').html(display);
+                
+            },
+            error: function(response){
+                console.log('ERROR KPI: ' + response);
+            }
+        })
 
         let yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
@@ -79,11 +142,7 @@
                         label: 'Daily Sales',
                         data: week,
                         borderWidth: 1,
-                    },{
-                        label: 'Daily Sales',
-                        data: week,
-                        borderWidth: 1,
-                    }],
+                    }]
                 },
                 options: {
                 maintainAspectRatio: false,
@@ -101,12 +160,12 @@
             new Chart(daily_sales, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Snacks', 'Drinks', 'Canned Goods', 'Personal Care', 'Others'],
+                    labels: sales_distribution_label,
                     datasets: [{
-                        label: 'Daily Sales',
-                        data: [1,2,3,4,5],
+                        label: 'Weekly Sales',
+                        data: sales_distribution_data,
                         borderWidth: 1
-                    }]
+                    },]
                 },
                 options: {
                 maintainAspectRatio: false,
@@ -169,6 +228,28 @@
     
 
     function sale_by_date(date){
+        let output = 0;
+        $.ajax({
+            url: '../models/dashboard/sales_by_date.php',
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            data:{
+                date        : date
+            },
+            success: function(response){
+                if(response.sale){
+                    output = response.sale;
+                }
+            },
+            error: function(response){
+                console.log('ERROR KPI: ' + response);
+            }
+        })
+        return output;
+    }
+
+    function sale_by_date_and(date){
         let output = 0;
         $.ajax({
             url: '../models/dashboard/sales_by_date.php',
