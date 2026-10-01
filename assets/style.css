@@ -279,3 +279,25 @@ html, body{
 .confirm > div, .cancel > div, .clear > div{
     font-size: 30px;
 }
+
+/* Scrollbar width */
+        ::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+        }
+
+        /* Track (background) */
+        ::-webkit-scrollbar-track {
+        background: #0f1011;
+        }
+
+        /* Thumb (the part you drag) */
+        ::-webkit-scrollbar-thumb {
+        background: #383b3f;
+        border-radius: 10px;
+        }
+
+        /* Thumb when hovering */
+        ::-webkit-scrollbar-thumb:hover {
+        background: #62666d;
+        }

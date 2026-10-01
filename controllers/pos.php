@@ -282,8 +282,8 @@
             dataType: 'json',
             async: false,
             data:{
-                total_sale : total_sales_calc,
-                total_profit : total_profit_calc,
+                // total_sale : total_sales_calc,
+                // total_profit : total_profit_calc,
                 tendered_amount: tendered_amount_calc,
                 change_amount: change_amount_calc,
                 account_id: <?php echo json_encode($_SESSION['account_id']); ?>

@@ -77,7 +77,7 @@
             color: var(--color-fog);
         }
         .container{
-            height: 500px;
+            /* height: 500px; */
             border: solid black 1px;
             padding: var(--card-padding);
             border-radius: var(--radius-cards);
@@ -100,10 +100,61 @@
         .row_title{
             font-size: var(--text-subheading-l);
         }
+        .top_products_wrapper{
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+
+            /* div:first-child{
+                background-color: red;
+            } */
+        }
+        .cell_title{
+            font-size: var(--text-body-lg);
+            text-align: center;
+        }
+        .top_products_container{
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
         #top_products{
             width: 250px;
-            overflow-y: hidden;
-            min-height: 0;
+            /* flex:1; */
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--element-gap);
+            text-align: justify;
+            div{
+                color: var(--color-fog);
+            }
+        }
+        #top_products > div{
+
+            padding: var(--element-gap);
+            border: var(--default-border);
+            border-radius: var(--radius-cards);
+            display: flex;
+            flex-direction: column;
+            gap: var(--element-gap);
+
+        }
+        .top_products_display{
+            display: flex;
+            justify-content: space-between;
+        }
+        .top_products_detail{
+            border-top: var(--subtle-border);
+            padding-top: var(--element-gap);
+        }
+        .sales_insights{
+            height: 500px;
+        }
+        .sales_distribution_container{
+            display: flex;
+            flex-direction: column;
+            gap: var(--element-gap);
         }
         </style>
 <body>
@@ -130,19 +181,19 @@
         <div class="row">
             <div class="cards">
                 <!-- SALES -->
-                <div class="cell" id="today_total_sales">
+                <div class="cell" id="daily_total_sales">
                     <div class="description">Daily sales</div>
                     <div class="data">PHP amount</div>
                 </div>
-                <div class="cell" id="today_total_sales">
+                <div class="cell" id="weekly_total_sales">
                     <div class="description">Weekly Sales</div>
                     <div class="data">PHP amount</div>
                 </div>
-                <div class="cell" id="today_total_sales">
+                <div class="cell" id="monthly_total_sales">
                     <div class="description">Monthly Sales</div>
                     <div class="data">PHP amount</div>
                 </div>
-                <div class="cell" id="today_total_sales">
+                <div class="cell" id="annual_total_sales">
                     <div class="description">Annual Sales</div>
                     <div class="data">PHP amount</div>
                 </div>
@@ -165,21 +216,36 @@
         <div class="row_title">
             This Week's Sales
         </div>
-        <div class="row">
-            <div class="container graph_container" style="flex:4">
+        <div class="row sales_insights" >
+            <div class="container graph_container" style="flex:3">
                 <canvas id="daily_sales_line_chart"></canvas>
             </div>
-            <div class="cell" id="top_products">
-                <table>
+            <div class="cell top_products_wrapper"  style="flex:1S">
+                <div class='cell_title'>
+                    Weekly Top Products
+                </div>
+                <div class="top_products_container">
+                    <div id="top_products"></div>
+                </div>
+                <!-- <div >
+
+                </div> -->
+                <!-- <table>
                     <tbody ></tbody>
-                </table>
+                </table> -->
                 <!-- <div>1 coca-cola php982.00</div>
                 <div>2 coca-cola php982.00</div>
                 <div>4 coca-cola php982.00</div>
                 <div>4 coca-cola php982.00</div> -->
             </div>
-            <div class="container graph_container" style="flex:1">
+            <div class="container graph_container sales_distribution_container" style="flex:1">
+                <div class='cell_title'>
+                    Weekly Sales Distribution
+                </div>
                 <canvas id="daily_sales_category_distribution_pie_chart"></canvas>
+                <div class="data">
+                    
+                </div>
             </div>
         </div>
         <div class="row_title">

@@ -12,7 +12,9 @@
     i.size,
     uom.unit,
     c.category,
-    SUM(td.current_price * td.quantity) AS total_sales
+    SUM(td.current_price * td.quantity) AS total_sales,
+    SUM(td.quantity) AS total_quantity
+
 FROM
     transaction_details td
 INNER JOIN inventory i ON

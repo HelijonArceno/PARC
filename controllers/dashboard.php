@@ -26,6 +26,8 @@
         week[weekday] = [toYMD(now), sale_by_date(today)];
         console.log(week[weekday]);
 
+        weekdates[weekday] = toYMD(now);
+
         // increments what to add
         let day_from_now = 0;
 
@@ -44,19 +46,28 @@
         //inserts day before today
         for(let i = weekday - 1; i > -1; i--){
             day_from_now--
-            let ndate = now;
+            let ndate = new Date(now);
             ndate.setDate(ndate.getDate() + day_from_now)
             week[i] = [toYMD(ndate), sale_by_date(toYMD(ndate))];
 
             weekdates[i] = toYMD(ndate);
         }
 
-        console.log(week)
+        // alert('weekdates: ' + weekdates);
+        console.log(week);
 
-        // alert(weekdates);
+        let month_range = get_month_range(now);
+        let year_range = get_year_range(now);
+
+        $('#weekly_total_sales .data').html(sale_by_dates(weekdates));
+        $('#monthly_total_sales .data').html(sale_by_range(month_range[0], month_range[1]));
+        $('#annual_total_sales .data').html(sale_by_range(year_range[0], year_range[1]));
+
+        // alert(sale_by_range('2024-09-21', '2026-10-3'));
 
         let sales_distribution_label = [];
         let sales_distribution_data = [];
+        
 
         $.ajax({
             url: '../models/dashboard/sales_by_date_and_category.php',
@@ -78,7 +89,10 @@
                 console.log('ERROR KPI: ' + response);
             }
         })
-
+        
+                            // <div>
+                            // php${record.total_sales.toLocaleString()}
+                            // </div>
         $.ajax({
             url: '../models/dashboard/sales_top_by_date.php',
             type: 'GET',
@@ -88,20 +102,47 @@
                 date        : weekdates
             },
             success: function(response){
-                let display;
+                let display = ``;
                 $.each(response, function(index, record){
+
+                let data_product_name = '';
+
+                    let data_product_size = '';
+
+                    if(record.brand != null){
+                        data_product_name += record.brand + ', ';
+                    }
+                    if(record.product_name != null){
+                        data_product_name += record.product_name;
+                    }
+                    if(record.variant != null){
+                        data_product_name += ', '+ record.variant;
+                    }
+                    if(record.size != null){
+                        data_product_name += ', '+ record.size;
+                        data_product_size += record.size;
+                    }
+                    if(record.unit != null){
+                        data_product_name += record.unit;
+                        data_product_size += record.unit;
+                    }
+
                     display += `
-                    <tr>
-                        <td>
-                        ${parseInt(index) + parseInt(1)}
-                        </td>
-                        <td>
-                        ${record.total_sales}
-                        </td>
-                        <td>
-                        ${record.brand}, ${record.product_name}, ${record.variant}, ${record.size} ${record.unit}
-                        </td>
-                    </tr>`
+                    <div>
+                        <div class="top_products_display">
+                            <div>
+                                #${parseInt(index) + parseInt(1)} - php${record.total_sales.toLocaleString()}
+                            </div>
+
+                            <div>
+                                ${record.total_quantity} sold
+                            </div>
+                        </div>
+                        <div class="top_products_detail">
+                            [ ${record.product_code} ] ${data_product_name}
+                        </div>
+                    </div> 
+                    `
                 });
                 $('#top_products').html(display);
                 
@@ -119,7 +160,7 @@
         expiry_range.setDate(expiry_range.getDate() + 5 );
         expiry_range = toYMD(expiry_range);
 
-        KPI('today_total_sales','money', today);
+        KPI('daily_total_sales','money', today);
         KPI('today_products_sold','quantity', today);
         KPI('today_gross_profit','money', today);
         KPI('low_stock','quantity');
@@ -146,7 +187,7 @@
                 },
                 options: {
                 maintainAspectRatio: false,
-                // responsive: true,
+                responsive: true,
                     scales: {
                         y: {
                         beginAtZero: true
@@ -158,7 +199,7 @@
         function load_sales_category_distribution_pie_chart(){
             const daily_sales = document.getElementById('daily_sales_category_distribution_pie_chart');
             new Chart(daily_sales, {
-                type: 'doughnut',
+                type: 'pie',
                 data: {
                     labels: sales_distribution_label,
                     datasets: [{
@@ -168,6 +209,7 @@
                     },]
                 },
                 options: {
+                    
                 maintainAspectRatio: false,
                 }
             });
@@ -249,20 +291,25 @@
         return output;
     }
 
-    function sale_by_date_and(date){
+    function sale_by_dates(p_dates){
         let output = 0;
         $.ajax({
-            url: '../models/dashboard/sales_by_date.php',
+            url: '../models/dashboard/sales_total_by_dates.php',
             type: 'GET',
             dataType: 'json',
             async: false,
             data:{
-                date        : date
+                date        : p_dates
             },
             success: function(response){
-                if(response.sale){
-                    output = response.sale;
+                output = response.totaL_sales;
+
+                if(output == null || output == 0){
+                    output = 'No data available';
+                }else{
+                    output = 'PHP ' + output.toLocaleString('en-US', {minimumFractionDigits: 2});
                 }
+                
             },
             error: function(response){
                 console.log('ERROR KPI: ' + response);
@@ -270,6 +317,47 @@
         })
         return output;
     }
+    function sale_by_range(p_start, p_end){
+        let output = 0;
+        $.ajax({
+            url: '../models/dashboard/sales_total_by_range.php',
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            data:{
+                start       : p_start,
+                end         : p_end,
+            },
+            success: function(response){
+                output = response.totaL_sales;
+
+                if(output == null || output == 0){
+                    output = 'No data available';
+                }else{
+                    output = 'PHP ' + output.toLocaleString('en-US', {minimumFractionDigits: 2});
+                }
+                
+            },
+            error: function(response){
+                console.log('ERROR KPI: ' + response);
+            }
+        })
+        return output;
+    }
+
+    function get_month_range(date){
+        let start = toYMD(new Date(date.getFullYear(), date.getMonth(), 1));
+        let end = toYMD(new Date(date.getFullYear(), date.getMonth() + 1, 1));
+
+        return [start, end];
+    };
+
+    function get_year_range(date){
+        let start = toYMD(new Date(date.getFullYear(), 0, 1));
+        let end = toYMD(new Date(date.getFullYear() + 1, 0, 1));
+
+        return [start, end];
+    };
 
     
 </script>
